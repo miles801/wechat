@@ -1,5 +1,6 @@
 package com.miles.wechat.impl;
 
+import com.miles.wechat.AbstractBasicTest;
 import com.miles.wechat.api.MessageService;
 import com.miles.wechat.api.MessageType;
 import com.miles.wechat.api.ResponseInfo;
@@ -8,7 +9,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MessageServiceImplTest {
+public class MessageServiceImplTest extends AbstractBasicTest{
     private MessageService messageService;
 
     @Before

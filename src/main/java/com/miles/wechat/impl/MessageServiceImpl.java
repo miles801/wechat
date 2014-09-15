@@ -12,8 +12,9 @@ import com.miles.wechat.core.RequestWrapper;
 import com.miles.wechat.utils.GsonHelper;
 import com.miles.wechat.utils.SimpleRequest;
 import com.miles.wechat.utils.StringUtils;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author miles
@@ -60,7 +61,12 @@ public class MessageServiceImpl implements MessageService {
         Gson gson = new Gson();
         String json = gson.toJson(jsonObject);
         String url = RequestWrapper.getUrl(WeChatUrl.SEND_TO_GROUP);
-        StringEntity entity = new StringEntity(json, ContentType.APPLICATION_JSON);
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, "application/json", "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         //发送
         String result = SimpleRequest.doPost(url, entity);
         return RequestWrapper.getResponseInfo(result);
@@ -106,7 +112,12 @@ public class MessageServiceImpl implements MessageService {
         Gson gson = new Gson();
         String json = gson.toJson(jsonObject);
         String url = RequestWrapper.getUrl(WeChatUrl.SEND_TO_USER);
-        StringEntity entity = new StringEntity(json, ContentType.APPLICATION_JSON);
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, "application/json", "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         //发送
         String result = SimpleRequest.doPost(url, entity);
         return RequestWrapper.getResponseInfo(result);

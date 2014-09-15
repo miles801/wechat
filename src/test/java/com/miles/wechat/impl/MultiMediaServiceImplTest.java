@@ -1,5 +1,6 @@
 package com.miles.wechat.impl;
 
+import com.miles.wechat.AbstractBasicTest;
 import com.miles.wechat.api.MultiMediaService;
 import com.miles.wechat.api.MultiMediaType;
 import com.miles.wechat.core.ServiceLoader;
@@ -13,13 +14,12 @@ import org.junit.Test;
 import java.io.File;
 import java.io.InputStream;
 
-public class MultiMediaServiceImplTest {
+public class MultiMediaServiceImplTest extends AbstractBasicTest{
     private MultiMediaService multiMediaService;
 
     @Before
     public void setUp() throws Exception {
         ServiceLoader serviceLoader = ServiceLoader.newInstance();
-        serviceLoader.setWeChatContext(SimpleWeChatContext.getInstance());
         serviceLoader.setMultiMediaService(new MultiMediaServiceImpl());
         WeChatEngine engine = WeChatEngine.newInstance();
         multiMediaService = engine.getMultiMediaService();
@@ -41,7 +41,7 @@ public class MultiMediaServiceImplTest {
 
     @Test
     public void testDownload() throws Exception {
-        File file = multiMediaService.download("4GPcqlFRIZ15YVYSa6R-86VBlz8QZHRO82ESmI1Juz-I7g1iaBieuGcRxd4U-DVA", "d:/");
+        File file = multiMediaService.download("rKZz9552Zu6ZuKkcTgMB4Rf6S8vhqjzcRJmAYgu5RFXo3IRGSWr5zfZ_w33aBIzd", "d:/");
         Assert.assertNotNull(file);
         Assert.assertTrue(file.exists());
     }

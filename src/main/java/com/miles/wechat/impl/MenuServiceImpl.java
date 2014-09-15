@@ -8,10 +8,10 @@ import com.miles.wechat.core.MenuAdapter;
 import com.miles.wechat.core.RequestWrapper;
 import com.miles.wechat.entity.Menu;
 import com.miles.wechat.utils.SimpleRequest;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.log4j.Logger;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -26,7 +26,12 @@ public class MenuServiceImpl implements MenuService {
         String url = RequestWrapper.getUrl(WeChatUrl.MENU_CREATE);
         AbstractMenuAdapter adapter = new MenuAdapter();
         String json = adapter.serialize(menus);
-        StringEntity entity = new StringEntity(json, ContentType.APPLICATION_JSON);
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, "application/json", "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         String result = SimpleRequest.doPost(url, entity);
         return RequestWrapper.getResponseInfo(result);
     }

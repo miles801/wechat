@@ -13,9 +13,9 @@ import com.miles.wechat.entity.FansGroup;
 import com.miles.wechat.utils.GsonHelper;
 import com.miles.wechat.utils.SimpleRequest;
 import com.miles.wechat.utils.StringUtils;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +33,13 @@ public class FansGroupServiceImpl implements FansGroupService {
         String url = RequestWrapper.getUrl(WeChatUrl.FANS_GROUP_CREATE);
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("group", GsonHelper.addElement("name", groupName));
-        String result = SimpleRequest.doPost(url, new StringEntity(GsonHelper.toJson(jsonObject), ContentType.APPLICATION_JSON));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(jsonObject.toString(), "application/json", "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result = SimpleRequest.doPost(url, entity);
         ResponseInfo info = RequestWrapper.getResponseInfo(result);
         if (!info.isSuccess()) {
             throw new RequestException(new RequestError(info.getInfo().getErrorCode(), info.getInfo().getErrorMessage()));
@@ -72,7 +78,13 @@ public class FansGroupServiceImpl implements FansGroupService {
         }
         String url = RequestWrapper.getUrl(WeChatUrl.FANS_IN_GROUP);
         JsonObject jsonObject = GsonHelper.addElement("openid", openId);
-        String result = SimpleRequest.doPost(url, new StringEntity(jsonObject.toString(), ContentType.APPLICATION_JSON));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(jsonObject.toString(), "application/json", "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result = SimpleRequest.doPost(url, entity);
         ResponseInfo info = RequestWrapper.getResponseInfo(result);
         if (!info.isSuccess()) {
             throw new RequestException(new RequestError(info.getInfo().getErrorCode(), info.getInfo().getErrorMessage()));
@@ -95,7 +107,13 @@ public class FansGroupServiceImpl implements FansGroupService {
         jsonObject.addProperty("name", newName);
         JsonObject object = new JsonObject();
         object.add("group", jsonObject);
-        String result = SimpleRequest.doPost(url, new StringEntity(object.toString(), ContentType.APPLICATION_JSON));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(jsonObject.toString(), "application/json", "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result = SimpleRequest.doPost(url, entity);
         ResponseInfo info = RequestWrapper.getResponseInfo(result);
         return info.isSuccess();
     }
@@ -109,7 +127,13 @@ public class FansGroupServiceImpl implements FansGroupService {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("openid", openId);
         jsonObject.addProperty("to_groupid", groupId);
-        String result = SimpleRequest.doPost(url, new StringEntity(jsonObject.toString(), ContentType.APPLICATION_JSON));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(jsonObject.toString(), "application/json", "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result = SimpleRequest.doPost(url, entity);
         ResponseInfo info = RequestWrapper.getResponseInfo(result);
         return info.isSuccess();
     }

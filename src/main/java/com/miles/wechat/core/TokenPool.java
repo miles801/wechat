@@ -3,8 +3,8 @@ package com.miles.wechat.core;
 
 import com.google.gson.Gson;
 import com.miles.wechat.api.DeveloperInfo;
-import com.miles.wechat.api.WeChatUrl;
 import com.miles.wechat.entity.AccessToken;
+import com.miles.wechat.exceptions.WeChatConfigException;
 import com.miles.wechat.utils.PlaceholderFormat;
 import com.miles.wechat.utils.SimpleRequest;
 import com.miles.wechat.utils.StringUtils;
@@ -44,10 +44,15 @@ public class TokenPool {
         if (at == null || new Date().getTime() - at.getExpiresIn() >= expire) {
             pool.remove(appId);
             //发起请求获得新的token
-            String url = PlaceholderFormat.format(WeChatUrl.TOKEN_URL, appId, secret);
+            String tokenUrl = Configuration.getInstance().getProperty("wechat.url.accessToken");
+            if (StringUtils.isEmpty(tokenUrl))
+                throw new WeChatConfigException("\u6CA1\u6709\u83B7\u5F97AccessToken\u7684\u8BBF\u95EE\u5730\u5740" +
+                        "!"
+                );
+            String url = PlaceholderFormat.format(tokenUrl, new String[]{appId, secret});
             String json = SimpleRequest.doGet(url);
             Gson gson = new Gson();
-            at = gson.fromJson(json, AccessToken.class);
+            at = (AccessToken) gson.fromJson(json, AccessToken.class);
             pool.put(appId, at);
         }
 

@@ -9,6 +9,7 @@ public enum MessageType {
     TEXT("text"),
     IMAGE("image"),
     VOICE("voice"),
+    MUSIC("music"),
     VIDEO("video"),
     LOCATION("location"),
     LINK("link"),

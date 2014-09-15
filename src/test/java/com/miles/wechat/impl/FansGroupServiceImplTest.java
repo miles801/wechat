@@ -1,5 +1,6 @@
 package com.miles.wechat.impl;
 
+import com.miles.wechat.AbstractBasicTest;
 import com.miles.wechat.api.FansGroupService;
 import com.miles.wechat.core.WeChatEngine;
 import com.miles.wechat.entity.FansGroup;
@@ -9,7 +10,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class FansGroupServiceImplTest {
+public class FansGroupServiceImplTest extends AbstractBasicTest {
     private FansGroupService fansGroupService;
 
     @Before

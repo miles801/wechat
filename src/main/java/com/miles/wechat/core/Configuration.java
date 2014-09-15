@@ -15,9 +15,6 @@ import java.util.Properties;
 public class Configuration {
     private static Configuration configuration = new Configuration();
     Properties properties;
-    private String appId;
-    private String secret;
-    private String token;
 
     private Configuration() {
         InputStream in = Configuration.class.getClassLoader().getResourceAsStream("wechat.properties");
@@ -25,9 +22,6 @@ public class Configuration {
             try {
                 properties = new Properties();
                 properties.load(in);
-                appId = properties.getProperty("wechat.appid");
-                secret = properties.getProperty("wechat.secret");
-                token = properties.getProperty("wechat.tokens");
             } catch (IOException e) {
                 Logger logger = Logger.getLogger(Configuration.class);
                 logger.info("没有找到微信的配置文件[wechat.properties],使用默认值!");
@@ -41,14 +35,22 @@ public class Configuration {
     }
 
     public String getAppId() {
-        return appId;
+        return getProperty("wechat.appid");
     }
 
     public String getSecret() {
-        return secret;
+        return getProperty("wechat.secret");
     }
 
     public String getToken() {
-        return token;
+        return getProperty("wechat.token");
+    }
+
+    public String getWcid() {
+        return getProperty("wechat.originId");
+    }
+
+    public String getProperty(String propertyName) {
+        return properties.getProperty(propertyName);
     }
 }

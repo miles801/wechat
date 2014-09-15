@@ -31,4 +31,11 @@ public interface MultiMediaService {
      */
     File download(String mediaId, String directory);
 
+    /**
+     * 根据多媒体的id获取访问地址
+     *
+     * @param mediaId 上传到微信的多媒体id
+     * @return 访问地址
+     */
+    String mediaUrl(String mediaId);
 }

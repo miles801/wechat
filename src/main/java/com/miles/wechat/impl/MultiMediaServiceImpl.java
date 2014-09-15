@@ -10,15 +10,14 @@ import com.miles.wechat.utils.SimpleRequest;
 import com.miles.wechat.utils.StringUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,12 +35,10 @@ public class MultiMediaServiceImpl implements MultiMediaService {
             throw new IllegalArgumentException("上传附件到微信服务器时,附件不存在!");
         }
         ContentBody body = new FileBody(file);
-        HttpEntity reqEntity = MultipartEntityBuilder.create()
-                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-                .addPart("file", body)
-                .build();
-        String url = RequestWrapper.getUrl(WeChatUrl.UPLOAD, type.getValue());
-        String result = SimpleRequest.doPost(url, reqEntity);
+        MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+        multipartEntity.addPart("file", body);
+        String url = RequestWrapper.getUrl(WeChatUrl.UPLOAD, new String[]{type.getValue()});
+        String result = SimpleRequest.doPost(url, multipartEntity);
         return GsonHelper.fromJson(result, UploadInfo.class);
     }
 
@@ -53,6 +50,7 @@ public class MultiMediaServiceImpl implements MultiMediaService {
         File file = null;
         if (!StringUtils.isEmpty(directory)) {
             File foo = new File(directory);
+            foo.mkdirs();
         }
         if (StringUtils.isEmpty(directory)) {
             directory = System.getProperty("java.io.tmpdir");
@@ -60,9 +58,12 @@ public class MultiMediaServiceImpl implements MultiMediaService {
         String url = RequestWrapper.getUrl(WeChatUrl.DOWNLOAD, mediaId);
         try {
             //请求获得附件
-            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpClient httpClient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
-            CloseableHttpResponse response = httpClient.execute(httpget);
+            if (SimpleRequest.proxy != null) {
+                httpClient.getParams().setParameter("http.route.default-proxy", SimpleRequest.proxy);
+            }
+            HttpResponse response = httpClient.execute(httpget);
             int status = response.getStatusLine().getStatusCode();
             if (status == 200) {
                 Header content = response.getFirstHeader("Content-disposition");
@@ -80,12 +81,14 @@ public class MultiMediaServiceImpl implements MultiMediaService {
                 InputStream input = response.getEntity().getContent();
                 FileUtils.copyInputStreamToFile(input, file);
             }
-            response.close();
-            httpClient.close();
-            httpget.releaseConnection();
+            httpClient.getConnectionManager().shutdown();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return file;
+    }
+
+    public String mediaUrl(String mediaId) {
+        return RequestWrapper.getUrl(WeChatUrl.DOWNLOAD, new String[]{mediaId});
     }
 }

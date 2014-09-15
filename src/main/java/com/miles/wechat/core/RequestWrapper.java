@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.miles.wechat.api.DeveloperInfo;
 import com.miles.wechat.api.ResponseInfo;
 import com.miles.wechat.entity.GlobalCode;
+import com.miles.wechat.exceptions.WeChatConfigException;
 import com.miles.wechat.utils.PlaceholderFormat;
 import com.miles.wechat.utils.StringUtils;
 
@@ -34,10 +35,15 @@ public class RequestWrapper {
         int length = (extraData == null || extraData.length == 0) ? 0 : extraData.length;
         Serializable[] params = new Serializable[length + 1];
         params[0] = accessToken;
+        Configuration configuration = Configuration.getInstance();
+        String configUrl = configuration.getProperty(url);
+        if (StringUtils.isEmpty(configUrl)) {
+            throw new WeChatConfigException((new StringBuilder()).append("\u6CA1\u6709\u83B7\u5F97\u5C5E\u6027\u503C\u4E3A[").append(url).append("]\u7684\u5FAE\u4FE1\u8BBF\u95EE\u5730\u5740!").toString());
+        }
         if (length > 0) {
             System.arraycopy(extraData, 0, params, 1, length);
         }
-        return PlaceholderFormat.format(url, params);
+        return PlaceholderFormat.format(configUrl, params);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.miles.wechat.impl;
 
+import com.miles.wechat.AbstractBasicTest;
 import com.miles.wechat.api.MenuService;
 import com.miles.wechat.api.ResponseInfo;
 import com.miles.wechat.core.ServiceLoader;
@@ -12,13 +13,12 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuServiceImplTest {
+public class MenuServiceImplTest extends AbstractBasicTest{
     private MenuService menuService;
 
     @Before
     public void setUp() throws Exception {
         ServiceLoader serviceLoader = ServiceLoader.newInstance();
-        serviceLoader.setWeChatContext(SimpleWeChatContext.getInstance());
         serviceLoader.setMenuService(new MenuServiceImpl());
         WeChatEngine engine = WeChatEngine.newInstance();
         menuService = engine.getMenuService();
