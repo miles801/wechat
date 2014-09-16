@@ -1,7 +1,7 @@
 package com.miles.wechat.impl;
 
 import com.miles.wechat.api.BasicService;
-import com.miles.wechat.core.ServiceLoader;
+import com.miles.wechat.core.Configuration;
 import com.miles.wechat.utils.StringUtils;
 
 import java.security.MessageDigest;
@@ -19,19 +19,14 @@ public class BasicServiceImpl implements BasicService {
 
     @Override
     public boolean signature(String signature, String timestamp, String nonce) {
-        String[] tokens = ServiceLoader.newInstance().getTokenPolicy().getTokens();
-        if (tokens == null || tokens.length < 1) {
+        String token = Configuration.getInstance().getToken();
+        if (StringUtils.isEmpty(token)) {
             throw new SecurityException("没有获得微信的token!");
         }
         if (StringUtils.isEmpty(signature) || StringUtils.isEmpty(timestamp) || StringUtils.isEmpty(nonce)) {
             throw new IllegalArgumentException("微信接口认证时缺少参数!");
         }
-        for (String token : tokens) {
-            if (verify(token, signature, timestamp, nonce)) {
-                return true;
-            }
-        }
-        return false;
+        return verify(token, signature, timestamp, nonce);
     }
 
     private boolean verify(String token, String signature, String timestamp, String nonce) {
