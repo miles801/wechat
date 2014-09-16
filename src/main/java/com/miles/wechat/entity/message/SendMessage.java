@@ -89,6 +89,7 @@ public class SendMessage extends AbstractMessage {
         this.article = article;
     }
 
+    @XmlElement(name = "ArticleCount")
     public Integer getArticleCount() {
         return articleCount;
     }
