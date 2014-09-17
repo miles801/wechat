@@ -41,19 +41,21 @@ public class WeChatServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //验证
         String signature = request.getParameter("signature");
-        if (!StringUtils.isEmpty(signature)) {
-            String timestamp = request.getParameter("timestamp");
-            String nonce = request.getParameter("nonce");
-            String echostr = request.getParameter("echostr");
-            logger.info("验证消息:signature=" + signature + " , nonce=" + nonce + " , echostr=" + echostr + " , timestamp=" + timestamp);
-            boolean result = engine.getBasicService().signature(signature, timestamp, nonce);
-            if (!result) {
-                logger.error("微信请求认证失败!");
-            }
-            ServletOutputStream out = response.getOutputStream();
-            out.print(echostr);
-            out.close();
+        if (StringUtils.isEmpty(signature)) {
+            throw new SecurityException("非法的微信请求!");
         }
+        String timestamp = request.getParameter("timestamp");
+        String nonce = request.getParameter("nonce");
+        String echostr = request.getParameter("echostr");
+        logger.info("验证消息:signature=" + signature + " , nonce=" + nonce + " , echostr=" + echostr + " , timestamp=" + timestamp);
+        boolean result = engine.getBasicService().signature(signature, timestamp, nonce);
+        if (!result) {
+            logger.error("微信请求认证失败!");
+            return;
+        }
+        ServletOutputStream out = response.getOutputStream();
+        out.print(echostr);
+        out.close();
 
     }
 
@@ -74,6 +76,7 @@ public class WeChatServlet extends HttpServlet {
         logger.info("微信[" + content.getToUserName() + "]接收到来自[" + content.getFromUserName() + "]的消息[" + type + "]!");
         SendMessage sendMessage = null;
         Event event = null;
+        String eventType = "";
         if (MessageType.TEXT.getValue().equals(type)) {
             event = engine.getReceiveTextMsgEvent();
         } else if (MessageType.IMAGE.getValue().equals(type)) {
@@ -85,7 +88,7 @@ public class WeChatServlet extends HttpServlet {
         } else if (MessageType.LINK.getValue().equals(type)) {
             event = engine.getReceiveLinkMsgEvent();
         } else if (MessageType.EVENT.getValue().equals(type)) {
-            String eventType = content.getEvent();
+            eventType = content.getEvent();
             if ("subscribe".equals(eventType)) {
                 event = engine.getSubscribeEvent();
             } else if ("unsubscribe".equals(eventType)) {
@@ -96,10 +99,14 @@ public class WeChatServlet extends HttpServlet {
                 event = engine.getMenuClickEvent();
             } else if ("view".equals(eventType)) {
                 event = engine.getMenuViewEvent();
+            } else {
+                logger.error("未识别的Event[" + eventType + "]!");
             }
+        } else {
+            logger.error("未识别的消息类型[" + type + "]!");
         }
         if (event == null) {
-            logger.error("未识别的消息类型[" + type + "]，或者没有初始化对应的事件处理器!");
+            logger.error("不能处理的消息!\t消息类型[" + type + "]，事件类型[" + eventType + "]的事件处理器没有初始化!");
             return;
         }
         sendMessage = event.execute(content);
