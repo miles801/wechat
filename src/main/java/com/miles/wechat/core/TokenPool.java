@@ -45,10 +45,9 @@ public class TokenPool {
             pool.remove(appId);
             //发起请求获得新的token
             String tokenUrl = Configuration.getInstance().getProperty("wechat.url.accessToken");
-            if (StringUtils.isEmpty(tokenUrl))
-                throw new WeChatConfigException("\u6CA1\u6709\u83B7\u5F97AccessToken\u7684\u8BBF\u95EE\u5730\u5740" +
-                        "!"
-                );
+            if (StringUtils.isEmpty(tokenUrl)) {
+                throw new WeChatConfigException("没有获得AccessToken的访问地址!或者公众号没有找到!");
+            }
             String url = PlaceholderFormat.format(tokenUrl, new String[]{appId, secret});
             String json = SimpleRequest.doGet(url);
             Gson gson = new Gson();
