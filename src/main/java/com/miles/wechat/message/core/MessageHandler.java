@@ -2,9 +2,11 @@ package com.miles.wechat.message.core;
 
 import com.miles.wechat.core.WeChatContext;
 import com.miles.wechat.core.WeChatEngine;
+import com.miles.wechat.exceptions.WeChatMessageException;
 import com.miles.wechat.message.enums.ReceivedMessageType;
 import com.miles.wechat.message.model.receive.*;
 import com.miles.wechat.message.model.reply.ReplyMessage;
+import com.miles.wechat.utils.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -46,7 +48,36 @@ public class MessageHandler {
 
         // 清空上下文
         WeChatContext.remove();
-        return parser.parseToXml(replyMessage);
+
+        // 回复信息检查
+        try {
+            if (isValidReplyMessage(replyMessage)) {
+                return parser.parseToXml(replyMessage);
+            }
+        } catch (WeChatMessageException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 检查回复的消息是否为正确的消息
+     */
+    private boolean isValidReplyMessage(ReplyMessage replyMessage) throws WeChatMessageException {
+        if (replyMessage == null) {
+            return false;
+        }
+
+        if (StringUtils.isEmpty(replyMessage.getFromUserName())) {
+            throw new WeChatMessageException("无效的消息!没有指定消息的发送人!");
+        }
+        if (StringUtils.isEmpty(replyMessage.getToUserName())) {
+            throw new WeChatMessageException("无效的消息!没有指定消息的接收人!");
+        }
+        if (StringUtils.isEmpty(replyMessage.getMessageType())) {
+            throw new WeChatMessageException("无效的消息!没有指定消息的类型!");
+        }
+        return true;
     }
 
     /**
