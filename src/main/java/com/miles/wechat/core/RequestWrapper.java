@@ -1,10 +1,12 @@
 package com.miles.wechat.core;
 
 import com.google.gson.Gson;
-import com.miles.wechat.api.DeveloperInfo;
+import com.miles.cache.CacheContainer;
 import com.miles.wechat.api.ResponseInfo;
+import com.miles.wechat.api.WechatAccount;
 import com.miles.wechat.entity.GlobalCode;
 import com.miles.wechat.exceptions.WeChatConfigException;
+import com.miles.wechat.impl.ResponseData;
 import com.miles.wechat.utils.PlaceholderFormat;
 import com.miles.wechat.utils.StringUtils;
 
@@ -23,12 +25,16 @@ public class RequestWrapper {
      * @return 新的url
      */
     public static String getUrl(String url, Serializable... extraData) {
-        WeChatEngine engine = WeChatEngine.newInstance();
-        DeveloperInfo developerInfo = engine.getWeChatContext().getDeveloperInfo();
-        if (developerInfo == null) {
-            throw new SecurityException("该公众号还没有成为开发者!");
+        WechatAccount wechatAccount = (WechatAccount) CacheContainer.getInstance()
+                .getCachedData(CacheAccount.class)
+                .get(WeChatContext.get());
+        if (wechatAccount == null) {
+            throw new SecurityException("公众号[" + WeChatContext.get() + "]还没有成为开发者或者没有被加载!");
         }
-        String accessToken = TokenPool.getAccessToken(developerInfo.getAppId(), developerInfo.getSecret());
+        String accessToken = (String) CacheContainer.getInstance()
+                .getCachedData(CacheAccessToken.class)
+                .get(wechatAccount.getOriginalId());
+//        String accessToken = TokenPool.getAccessToken(wechatAccount.getAppId(), wechatAccount.getSecret());
         if (StringUtils.isEmpty(accessToken)) {
             throw new SecurityException("没有获得accessToken!");
         }
@@ -54,17 +60,15 @@ public class RequestWrapper {
      */
     public static ResponseInfo getResponseInfo(String result) {
         Gson gson = new Gson();
-        final GlobalCode code = gson.fromJson(result, GlobalCode.class);
-        return new ResponseInfo() {
-            @Override
-            public boolean isSuccess() {
-                return code == null || code.getErrorCode() == null || code.getErrorCode() == 0;
-            }
-
-            @Override
-            public GlobalCode getInfo() {
-                return code;
-            }
-        };
+        GlobalCode code = gson.fromJson(result, GlobalCode.class);
+        ResponseData data = new ResponseData();
+        data.setMessageId(code.getMsgId());
+        data.setErrorCode(code.getErrorCode());
+        data.setErrorMessage(code.getErrorMessage());
+        // 0表示正确
+        if (code.getErrorCode() == null || code.getErrorCode() == 0) {
+            data.setSuccess(true);
+        }
+        return data;
     }
 }

@@ -7,16 +7,11 @@ import com.google.gson.JsonObject;
  * Gson的辅助工具类
  *
  * @author miles
- * @datetime 2014/5/21 20:49
  */
 public class GsonHelper {
 
     /**
      * 根据key和值生成一个JsonObject对象
-     *
-     * @param key
-     * @param value
-     * @return
      */
     public static JsonObject addElement(String key, String value) {
         JsonObject jsonObject = new JsonObject();

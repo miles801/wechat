@@ -21,7 +21,4 @@ public class WeChatException extends RuntimeException {
         super(cause);
     }
 
-    protected WeChatException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

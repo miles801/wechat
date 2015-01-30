@@ -19,6 +19,7 @@ public class Fans {
     private Integer sex;
     private String language;
     private String city;
+    private String province;
     private String country;
     @SerializedName("headimgurl")
     private String headImgUrl;
@@ -98,5 +99,13 @@ public class Fans {
 
     public void setSubscribeTime(Long subscribeTime) {
         this.subscribeTime = subscribeTime;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
     }
 }

@@ -22,6 +22,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 /**
  * @author miles
@@ -30,6 +31,7 @@ import java.io.InputStream;
 public class MultiMediaServiceImpl implements MultiMediaService {
 
     @Override
+    @SuppressWarnings("unchecked")
     public UploadInfo upload(File file, MultiMediaType type) {
         if (file == null || !file.exists()) {
             throw new IllegalArgumentException("上传附件到微信服务器时,附件不存在!");
@@ -37,7 +39,7 @@ public class MultiMediaServiceImpl implements MultiMediaService {
         ContentBody body = new FileBody(file);
         MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
         multipartEntity.addPart("file", body);
-        String url = RequestWrapper.getUrl(WeChatUrl.UPLOAD, new String[]{type.getValue()});
+        String url = RequestWrapper.getUrl(WeChatUrl.UPLOAD, new Serializable[]{type.getValue()});
         String result = SimpleRequest.doPost(url, multipartEntity);
         return GsonHelper.fromJson(result, UploadInfo.class);
     }
@@ -89,6 +91,6 @@ public class MultiMediaServiceImpl implements MultiMediaService {
     }
 
     public String mediaUrl(String mediaId) {
-        return RequestWrapper.getUrl(WeChatUrl.DOWNLOAD, new String[]{mediaId});
+        return RequestWrapper.getUrl(WeChatUrl.DOWNLOAD, new Serializable[]{mediaId});
     }
 }

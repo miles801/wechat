@@ -42,7 +42,7 @@ public class FansGroupServiceImpl implements FansGroupService {
         String result = SimpleRequest.doPost(url, entity);
         ResponseInfo info = RequestWrapper.getResponseInfo(result);
         if (!info.isSuccess()) {
-            throw new RequestException(new RequestError(info.getInfo().getErrorCode(), info.getInfo().getErrorMessage()));
+            throw new RequestException(new RequestError(info.getErrorCode(), info.getErrorMessage()));
         }
         JsonObject group = GsonHelper.fromJson(result, JsonObject.class);
         JsonObject groupObject = group.get("group").getAsJsonObject();
@@ -55,7 +55,7 @@ public class FansGroupServiceImpl implements FansGroupService {
         String result = SimpleRequest.doGet(url);
         ResponseInfo info = RequestWrapper.getResponseInfo(result);
         if (!info.isSuccess()) {
-            throw new RequestException(new RequestError(info.getInfo().getErrorCode(), info.getInfo().getErrorMessage()));
+            throw new RequestException(new RequestError(info.getErrorCode(), info.getErrorMessage()));
         }
         JsonObject data = GsonHelper.fromJson(result, JsonObject.class);
         JsonArray array = data.get("groups").getAsJsonArray();
@@ -87,7 +87,7 @@ public class FansGroupServiceImpl implements FansGroupService {
         String result = SimpleRequest.doPost(url, entity);
         ResponseInfo info = RequestWrapper.getResponseInfo(result);
         if (!info.isSuccess()) {
-            throw new RequestException(new RequestError(info.getInfo().getErrorCode(), info.getInfo().getErrorMessage()));
+            throw new RequestException(new RequestError(info.getErrorCode(), info.getErrorMessage()));
         }
         JsonObject json = GsonHelper.fromJson(result, JsonObject.class);
         if (json.get("groupid") != null) {

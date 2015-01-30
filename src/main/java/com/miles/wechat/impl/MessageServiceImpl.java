@@ -5,10 +5,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.miles.wechat.api.MessageService;
-import com.miles.wechat.api.MessageType;
 import com.miles.wechat.api.ResponseInfo;
 import com.miles.wechat.api.WeChatUrl;
 import com.miles.wechat.core.RequestWrapper;
+import com.miles.wechat.message.enums.ReceivedMessageType;
 import com.miles.wechat.utils.GsonHelper;
 import com.miles.wechat.utils.SimpleRequest;
 import com.miles.wechat.utils.StringUtils;
@@ -26,7 +26,7 @@ public class MessageServiceImpl implements MessageService {
     public static final String MESSAGE_TYPE = "msgtype";
 
     @Override
-    public ResponseInfo sendToGroup(String groupId, MessageType messageType, String message) {
+    public ResponseInfo sendToGroup(String groupId, ReceivedMessageType messageType, String message) {
         //验证
         if (StringUtils.isEmpty(groupId)) {
             throw new IllegalArgumentException("群发消息时，没有指定组的ID!");
@@ -41,22 +41,22 @@ public class MessageServiceImpl implements MessageService {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add(GROUP, GsonHelper.addElement("group_id", "2"));
 
-        if (MessageType.NEWS.equals(messageType)) {//图文消息
+        /*if (ReceivedMessageType.NEWS.equals(messageType)) {//图文消息
             jsonObject.add("mpnews", GsonHelper.addElement("media_id", message));
             jsonObject.addProperty(MESSAGE_TYPE, "mpnews");
-        } else if (MessageType.TEXT.equals(messageType)) {//文本消息
+        } else if (ReceivedMessageType.TEXT.equals(messageType)) {//文本消息
             jsonObject.add("text", GsonHelper.addElement("content", message));
             jsonObject.addProperty(MESSAGE_TYPE, "text");
-        } else if (MessageType.VOICE.equals(messageType)) {//语音消息
+        } else if (ReceivedMessageType.VOICE.equals(messageType)) {//语音消息
             jsonObject.add("voice", GsonHelper.addElement("media_id", message));
             jsonObject.addProperty(MESSAGE_TYPE, "voice");
-        } else if (MessageType.VIDEO.equals(messageType)) {//视频消息
+        } else if (ReceivedMessageType.VIDEO.equals(messageType)) {//视频消息
             jsonObject.add("mpvideo", GsonHelper.addElement("media_id", message));
             jsonObject.addProperty(MESSAGE_TYPE, "mpvideo");
-        } else if (MessageType.IMAGE.equals(messageType)) {//图片消息
+        } else if (ReceivedMessageType.IMAGE.equals(messageType)) {//图片消息
             jsonObject.add("image", GsonHelper.addElement("media_id", message));
             jsonObject.addProperty(MESSAGE_TYPE, "image");
-        }
+        }*/
         //获得要发送的数据
         Gson gson = new Gson();
         String json = gson.toJson(jsonObject);
@@ -73,7 +73,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public ResponseInfo sendToUsers(String[] toUsers, MessageType messageType, String message) {
+    public ResponseInfo sendToUsers(String[] toUsers, ReceivedMessageType messageType, String message) {
         //验证
         if (toUsers == null || toUsers.length < 1) {
             throw new IllegalArgumentException("群发消息时，没有指定接收人的openID列表!");
@@ -92,22 +92,22 @@ public class MessageServiceImpl implements MessageService {
         }
         jsonObject.add("touser", array);
 
-        if (MessageType.NEWS.equals(messageType)) {//图文消息
+        /*if (ReceivedMessageType.NEWS.equals(messageType)) {//图文消息
             jsonObject.add("mpnews", GsonHelper.addElement("media_id", message));
             jsonObject.addProperty(MESSAGE_TYPE, "mpnews");
-        } else if (MessageType.TEXT.equals(messageType)) {//文本消息
+        } else if (ReceivedMessageType.TEXT.equals(messageType)) {//文本消息
             jsonObject.add("text", GsonHelper.addElement("content", message));
             jsonObject.addProperty(MESSAGE_TYPE, "text");
-        } else if (MessageType.VOICE.equals(messageType)) {//语音消息
+        } else if (ReceivedMessageType.VOICE.equals(messageType)) {//语音消息
             jsonObject.add("voice", GsonHelper.addElement("media_id", message));
             jsonObject.addProperty(MESSAGE_TYPE, "voice");
-        } else if (MessageType.VIDEO.equals(messageType)) {//视频消息
+        } else if (ReceivedMessageType.VIDEO.equals(messageType)) {//视频消息
             jsonObject.add("video", GsonHelper.addElement("media_id", message));
             jsonObject.addProperty(MESSAGE_TYPE, "video");
-        } else if (MessageType.IMAGE.equals(messageType)) {//图片消息
+        } else if (ReceivedMessageType.IMAGE.equals(messageType)) {//图片消息
             jsonObject.add("image", GsonHelper.addElement("media_id", message));
             jsonObject.addProperty(MESSAGE_TYPE, "image");
-        }
+        }*/
         //获得要发送的数据
         Gson gson = new Gson();
         String json = gson.toJson(jsonObject);

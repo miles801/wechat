@@ -1,8 +1,11 @@
 package com.miles.wechat.event;
 
+import com.miles.wechat.message.model.receive.ReceivedImageMessage;
+
 /**
+ * 接收到图片消息的事件
+ *
  * @author miles
- * @datetime 2014/5/22 7:16
  */
-public interface ReceiveImageMsgEvent extends ReceiveMsgEvent {
+public interface ReceiveImageMsgEvent extends Event<ReceivedImageMessage> {
 }

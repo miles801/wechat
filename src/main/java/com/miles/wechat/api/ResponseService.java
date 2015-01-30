@@ -1,24 +1,24 @@
 package com.miles.wechat.api;
 
-import com.miles.wechat.entity.message.ReceiveMessage;
-import com.miles.wechat.entity.message.SendMessage;
+import com.miles.wechat.message.model.receive.ReceivedMessage;
+import com.miles.wechat.message.model.reply.ReplyMessage;
 
 /**
  * @author miles
  * @datetime 2014/5/22 6:55
  */
 public interface ResponseService {
-    SendMessage receiveTextMsg(ReceiveMessage message);
+    ReplyMessage receiveTextMsg(ReceivedMessage message);
 
-    SendMessage receiveImageMsg(ReceiveMessage message);
+    ReplyMessage receiveImageMsg(ReceivedMessage message);
 
-    SendMessage receiveVoiceMsg(ReceiveMessage message);
+    ReplyMessage receiveVoiceMsg(ReceivedMessage message);
 
-    SendMessage receiveVideoMsg(ReceiveMessage message);
+    ReplyMessage receiveVideoMsg(ReceivedMessage message);
 
-    SendMessage receiveLocationMsg(ReceiveMessage message);
+    ReplyMessage receiveLocationMsg(ReceivedMessage message);
 
-    SendMessage onSubscribe(ReceiveMessage message);
+    ReplyMessage onSubscribe(ReceivedMessage message);
 
-    SendMessage onUnsubscribe(ReceiveMessage message);
+    ReplyMessage onUnsubscribe(ReceivedMessage message);
 }

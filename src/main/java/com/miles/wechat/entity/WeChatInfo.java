@@ -1,6 +1,6 @@
 package com.miles.wechat.entity;
 
-import com.miles.wechat.api.DeveloperInfo;
+import com.miles.wechat.api.WechatAccount;
 
 /**
  * @author miles
@@ -9,7 +9,7 @@ import com.miles.wechat.api.DeveloperInfo;
 public class WeChatInfo {
     private String name;
 
-    private DeveloperInfo developerInfo;
+    private WechatAccount wechatAccount;
 
     private String province;
 

@@ -1,10 +1,11 @@
 package com.miles.wechat.event;
 
+import com.miles.wechat.message.model.receive.EventSubscribeMessage;
+
 /**
- * 关注
+ * 当粉丝关注时的事件
  *
  * @author miles
- * @datetime 2014/5/22 7:15
  */
-public interface SubscribeEvent extends Event {
+public interface SubscribeEvent extends Event<EventSubscribeMessage> {
 }

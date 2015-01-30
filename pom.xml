@@ -6,9 +6,9 @@
 
     <groupId>com.miles</groupId>
     <artifactId>wechat</artifactId>
-    <version>1.1.0</version>
+    <version>2.0</version>
     <description>
-        v1.1.0 升级描述:
+        v2.0 升级描述:
         1.重构微信的URL设计
         * 为了解决某些公司使用代理上网，且通过代理服务器访问外网，这样就导致无法与微信通信的问题，现将微信的访问地址移动到wechat.properties中
         * 现在如果wechat.properties文件不存在，则会报错!

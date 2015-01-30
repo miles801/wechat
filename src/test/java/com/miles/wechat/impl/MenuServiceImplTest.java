@@ -51,8 +51,8 @@ public class MenuServiceImplTest extends AbstractBasicTest{
         menus.add(menu2);
         ResponseInfo responseInfo = menuService.createMenu(menus);
         if (!responseInfo.isSuccess()) {
-            System.out.println(responseInfo.getInfo().getErrorCode());
-            System.out.println(responseInfo.getInfo().getErrorMessage());
+            System.out.println(responseInfo.getErrorCode());
+            System.out.println(responseInfo.getErrorMessage());
         }
         Assert.assertNotNull(responseInfo);
         Assert.assertTrue(responseInfo.isSuccess());
@@ -70,8 +70,8 @@ public class MenuServiceImplTest extends AbstractBasicTest{
         ResponseInfo responseInfo = menuService.clearMenu();
         Assert.assertNotNull(responseInfo);
         if (!responseInfo.isSuccess()) {
-            System.out.println(responseInfo.getInfo().getErrorCode());
-            System.out.println(responseInfo.getInfo().getErrorMessage());
+            System.out.println(responseInfo.getErrorCode());
+            System.out.println(responseInfo.getErrorMessage());
         }
         Assert.assertTrue(responseInfo.isSuccess());
     }

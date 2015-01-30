@@ -1,8 +1,11 @@
 package com.miles.wechat.event;
 
+import com.miles.wechat.message.model.receive.ReceivedLinkMessage;
+
 /**
+ * 接收到链接消息
+ *
  * @author miles
- * @datetime 2014/5/22 7:27
  */
-public interface ReceiveLinkMsgEvent extends ReceiveMsgEvent {
+public interface ReceiveLinkMsgEvent extends Event<ReceivedLinkMessage> {
 }

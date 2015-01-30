@@ -1,5 +1,7 @@
 package com.miles.wechat.api;
 
+import com.miles.wechat.message.enums.ReceivedMessageType;
+
 /**
  * @author miles
  * @datetime 2014/5/21 1:50
@@ -14,7 +16,7 @@ public interface MessageService {
      * @param message     消息
      * @return 响应结果
      */
-    ResponseInfo sendToGroup(String groupId, MessageType messageType, String message);
+    ResponseInfo sendToGroup(String groupId, ReceivedMessageType messageType, String message);
 
     /**
      * 给一组粉丝发送消息
@@ -24,5 +26,5 @@ public interface MessageService {
      * @param message     消息
      * @return 响应结果
      */
-    ResponseInfo sendToUsers(String[] toUsers, MessageType messageType, String message);
+    ResponseInfo sendToUsers(String[] toUsers, ReceivedMessageType messageType, String message);
 }

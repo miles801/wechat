@@ -4,7 +4,6 @@ import com.miles.wechat.api.MultiMediaType;
 
 /**
  * @author miles
- * @datetime 2014/5/7 1:09
  */
 public class MultiMediaHelper {
     private static final String IMG_JPG = "image/jpeg";
@@ -16,8 +15,8 @@ public class MultiMediaHelper {
     /**
      * 根据文件类型获得微信所支持的多媒体类型
      *
-     * @param type
-     * @return
+     * @param type 文件类型
+     * @return 文件类型对应的多媒体类型
      */
     public static MultiMediaType getFileType(String type) {
         if (StringUtils.isEmpty(type)) {

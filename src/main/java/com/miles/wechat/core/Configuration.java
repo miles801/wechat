@@ -46,7 +46,7 @@ public class Configuration {
         return getProperty("wechat.token");
     }
 
-    public String getWcid() {
+    public String getOriginalId() {
         return getProperty("wechat.originId");
     }
 

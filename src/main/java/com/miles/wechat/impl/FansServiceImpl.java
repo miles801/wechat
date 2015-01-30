@@ -29,7 +29,7 @@ public class FansServiceImpl implements FansService {
         String result = SimpleRequest.doGet(url);
         ResponseInfo info = RequestWrapper.getResponseInfo(result);
         if (!info.isSuccess()) {
-            throw new RequestException(new RequestError(info.getInfo().getErrorCode(), info.getInfo().getErrorMessage()));
+            throw new RequestException(new RequestError(info.getErrorCode(), info.getErrorMessage()));
         }
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
@@ -70,9 +70,14 @@ public class FansServiceImpl implements FansService {
         String result = SimpleRequest.doGet(url);
         ResponseInfo info = RequestWrapper.getResponseInfo(result);
         if (!info.isSuccess()) {
-            throw new RequestException(new RequestError(info.getInfo().getErrorCode(), info.getInfo().getErrorMessage()));
+            throw new RequestException(new RequestError(info.getErrorCode(), info.getErrorMessage()));
         }
         Gson gson = new Gson();
-        return gson.fromJson(result, Fans.class);
+        Fans fans = gson.fromJson(result, Fans.class);
+        // 时间*1000
+        if (fans.getSubscribeTime() != null) {
+            fans.setSubscribeTime(fans.getSubscribeTime() * 1000);
+        }
+        return fans;
     }
 }

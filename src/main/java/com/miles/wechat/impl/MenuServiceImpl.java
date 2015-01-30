@@ -49,7 +49,7 @@ public class MenuServiceImpl implements MenuService {
         String result = SimpleRequest.doGet(url);
         ResponseInfo info = RequestWrapper.getResponseInfo(result);
         if (!info.isSuccess()) {
-            logger.error(info.getInfo().getErrorCode() + "--》" + info.getInfo().getErrorMessage());
+            logger.error(info.getErrorCode() + "--》" + info.getErrorMessage());
             return null;
         }
         AbstractMenuAdapter adapter = new MenuAdapter();

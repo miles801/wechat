@@ -9,7 +9,6 @@ import java.util.List;
  * 微信菜单类
  *
  * @author miles
- * @datetime 2014/5/21 2:02
  */
 public class Menu {
     private String name;

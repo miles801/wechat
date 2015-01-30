@@ -21,7 +21,4 @@ public class WeChatConfigException extends WeChatException {
         super(cause);
     }
 
-    protected WeChatConfigException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

@@ -1,12 +1,8 @@
 package com.miles.wechat.web;
 
-import com.miles.wechat.api.MessageType;
 import com.miles.wechat.core.WeChatEngine;
-import com.miles.wechat.entity.message.ReceiveMessage;
-import com.miles.wechat.entity.message.SendMessage;
-import com.miles.wechat.event.Event;
-import com.miles.wechat.utils.StringUtils;
-import com.miles.wechat.utils.XmlUtils;
+import com.miles.wechat.message.core.MessageHandler;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
@@ -16,11 +12,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 
 /**
- * 与微信进行交互的servlet
+ * 与微信进行交互的servlet，微信接入地址（在微信开发者配置页面配置访问的地址为该Servlet）
+ * <p>
+ * 提供接入和接收消息（回复消息）两个接口
+ * </p>
+ * <p>
+ * 可以在该地址后面添加参数originalId（微信原始账号ID） 用于在当前系统中同时处理多个公众号信息的；
+ * 如果没有指定这个参数，则会判断账号池中的账号个数，如果个数不等于1，则抛出异常!
+ * </p>
  *
  * @author miles
  * @datetime 2014/5/21 21:55
@@ -30,92 +32,69 @@ public class WeChatServlet extends HttpServlet {
     private WeChatEngine engine = WeChatEngine.newInstance();
 
     /**
-     * 微信URL合法性验证
+     * 微信接入
      * 可获取参数：
-     * signature
-     * timestamp
-     * echostr
-     * nonce
+     * <p>
+     * originalId 公众号原始ID（配置URL地址时指定，可选，推荐配置）<br/>
+     * 注意：微信不允许在接入时指定参数，所以这个值必须是在地址栏中存在；<br/>
+     * 可以通过一个第三方的访问地址追加originalId的方式forward到当前servlet
+     * <p/>
+     * <p>
+     * signature  加密签名(由以下3个信息加密而来）
+     * </p>
+     * <p>
+     * timestamp 时间戳
+     * </p>
+     * <p>
+     * nonce 随机数
+     * </p>
+     * <p>
+     * echostr 随机字符串
+     * </p>
+     * <p>
+     * 当接入失败时，会触发AuthFailEvent（认证失败）事件
+     * </p>
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //验证
-        String signature = request.getParameter("signature");
-        if (StringUtils.isEmpty(signature)) {
-            throw new SecurityException("非法的微信请求!");
+        if (verifyRequest(request)) {
+            ServletOutputStream out = response.getOutputStream();
+            String echostr = request.getParameter("echostr");
+            out.print(echostr);
+            out.close();
         }
-        String timestamp = request.getParameter("timestamp");
-        String nonce = request.getParameter("nonce");
-        String echostr = request.getParameter("echostr");
-        logger.info("验证消息:signature=" + signature + " , nonce=" + nonce + " , echostr=" + echostr + " , timestamp=" + timestamp);
-        boolean result = engine.getBasicService().signature(signature, timestamp, nonce);
-        if (!result) {
-            logger.error("微信请求认证失败!");
-            return;
-        }
-        ServletOutputStream out = response.getOutputStream();
-        out.print(echostr);
-        out.close();
-
     }
 
     /**
-     * 微信客户端POST过来的数据
+     * 接收微信发送的数据（POST)，
+     * 会先判断消息的合法性，然后再将接收到的消息转交给消息处理机进行处理，最后响应消息
      *
      * @throws ServletException
      * @throws IOException
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        InputStream in = request.getInputStream();
-        ReceiveMessage content = XmlUtils.fromXml(in, ReceiveMessage.class);
-        if (content == null) {
-            throw new RuntimeException("没有接收到任何内容!");
-        }
-        String type = content.getMessageType().trim();
-        logger.info("微信[" + content.getToUserName() + "]接收到来自[" + content.getFromUserName() + "]的消息[" + type + "]!");
-        SendMessage sendMessage = null;
-        Event event = null;
-        String eventType = "";
-        if (MessageType.TEXT.getValue().equals(type)) {
-            event = engine.getReceiveTextMsgEvent();
-        } else if (MessageType.IMAGE.getValue().equals(type)) {
-            event = engine.getReceiveImageMsgEvent();
-        } else if (MessageType.VIDEO.getValue().equals(type)) {
-            event = engine.getReceiveVideoMsgEvent();
-        } else if (MessageType.LOCATION.getValue().equals(type)) {
-            event = engine.getReceiveLocationMsgEvent();
-        } else if (MessageType.LINK.getValue().equals(type)) {
-            event = engine.getReceiveLinkMsgEvent();
-        } else if (MessageType.EVENT.getValue().equals(type)) {
-            eventType = content.getEvent();
-            if ("subscribe".equals(eventType)) {
-                event = engine.getSubscribeEvent();
-            } else if ("unsubscribe".equals(eventType)) {
-                event = engine.getUnsubscribeEvent();
-            } else if ("location".equals(eventType)) {
-                event = engine.getReportLocationEvent();
-            } else if ("click".equals(eventType)) {
-                event = engine.getMenuClickEvent();
-            } else if ("view".equals(eventType)) {
-                event = engine.getMenuViewEvent();
-            } else {
-                logger.error("未识别的Event[" + eventType + "]!");
-            }
-        } else {
-            logger.error("未识别的消息类型[" + type + "]!");
-        }
-        if (event == null) {
-            logger.error("不能处理的消息!\t消息类型[" + type + "]，事件类型[" + eventType + "]的事件处理器没有初始化!");
+        // 验证消息的合法性
+        if (!verifyRequest(request)) {
+            logger.error("请求认证失败!");
+            // 验证失败
             return;
         }
-        sendMessage = event.execute(content);
-        if (sendMessage != null) {
-            String xml = XmlUtils.toXml(sendMessage, SendMessage.class);
+        request.setCharacterEncoding("utf-8");
+        // 获取微信发送过来的内容
+        String content = IOUtils.toString(request.getInputStream(), "utf-8");
+
+        // 将消息交给消息处理机
+        MessageHandler messageHandler = MessageHandler.getInstance();
+
+        // 响应消息
+        String responseMsg = messageHandler.handle(content);
+        if (responseMsg != null) {
             response.setContentType("application/xml");
             response.setCharacterEncoding("utf-8");
             PrintWriter writer = response.getWriter();
-            writer.print(xml);
+            writer.print(responseMsg);
             writer.flush();
             writer.close();
         }
@@ -136,5 +115,22 @@ public class WeChatServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+    }
+
+    /**
+     * 验证请求是否合法
+     * <p>如果合法，则返回正确的字符串，否则返回null</p>
+     */
+    private boolean verifyRequest(HttpServletRequest request) {
+        // 获取参数
+        String signature = request.getParameter("signature");
+        String timestamp = request.getParameter("timestamp");
+        String nonce = request.getParameter("nonce");
+        String originalId = request.getParameter("originalId");
+        String echostr = request.getParameter("echostr");
+        logger.info("验证消息:originalId=" + originalId + ",signature=" + signature + " , nonce=" + nonce + " , echostr=" + echostr + " , timestamp=" + timestamp);
+
+        // 认证
+        return engine.getAuthService().signature(originalId, signature, timestamp, nonce);
     }
 }

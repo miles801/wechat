@@ -2,7 +2,7 @@ package com.miles.wechat.core;
 
 
 import com.google.gson.Gson;
-import com.miles.wechat.api.DeveloperInfo;
+import com.miles.cache.CacheContainer;
 import com.miles.wechat.entity.AccessToken;
 import com.miles.wechat.exceptions.WeChatConfigException;
 import com.miles.wechat.utils.PlaceholderFormat;
@@ -20,6 +20,7 @@ import java.util.Map;
  * @author miles
  * @datetime 2014/5/4 12:53
  */
+@Deprecated
 public class TokenPool {
     private static final long expire = 1000 * 30;
     private static Map<String, AccessToken> pool = new HashMap<String, AccessToken>();
@@ -61,21 +62,16 @@ public class TokenPool {
     /**
      * 根据公众平台微信号获取access_token
      *
-     * @param wcid 微信公众号
+     * @param originalId 微信公众号原始ID
      * @return access_token
      */
-    public static String getAccessToken(String wcid) {
-        if (StringUtils.isEmpty(wcid)) {
+    public static String getAccessToken(String originalId) {
+        if (StringUtils.isEmpty(originalId)) {
             throw new IllegalArgumentException("没有获得微信公众平台公众号!");
         }
-        WeChatContext context = WeChatEngine.newInstance().getWeChatContext();
-        DeveloperInfo info = context.getDeveloperInfo();
-        if (info == null) {
-            throw new SecurityException("该公众号不存在或者尚未开通开发者功能!");
-        }
-        String appId = info.getAppId();
-        String secret = info.getSecret();
-        return getAccessToken(appId, secret);
+        return (String) CacheContainer.getInstance()
+                .getCachedData(CacheAccessToken.class)
+                .get(originalId);
     }
 
 }

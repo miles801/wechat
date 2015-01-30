@@ -1,8 +1,11 @@
 package com.miles.wechat.event;
 
+import com.miles.wechat.message.model.receive.ReceivedTextMessage;
+
 /**
+ * 接收到文本消息的事件
+ *
  * @author miles
- * @datetime 2014/5/22 7:15
  */
-public interface ReceiveTextMsgEvent extends ReceiveMsgEvent {
+public interface ReceiveTextMsgEvent extends Event<ReceivedTextMessage> {
 }

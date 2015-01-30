@@ -15,6 +15,10 @@ public class StringUtils {
         return str == null || "".equals(str.trim());
     }
 
+    public static boolean isNotEmpty(String string) {
+        return !isEmpty(string);
+    }
+
     /**
      * 字节转字符串
      *
