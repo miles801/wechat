@@ -1,22 +1,18 @@
 package com.miles.wechat.core;
 
 import com.miles.cache.CacheContainer;
-import com.miles.wechat.impl.SimpleCacheAccount;
+import com.miles.wechat.WeChatBaseTest;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
 
-public class CacheAccessTokenTest {
+public class CacheAccessTokenTest  extends WeChatBaseTest{
     CacheContainer cacheContainer = CacheContainer.getInstance();
 
     @Before
     public void setUp() throws Exception {
-        PublicServiceLoader publicServiceLoader = PublicServiceLoader.getInstance();
-        publicServiceLoader.setCacheAccount(new SimpleCacheAccount());
-
-        WeChatEngine.newInstance();
     }
 
     @Test

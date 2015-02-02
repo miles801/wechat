@@ -1,28 +1,30 @@
 package com.miles.wechat.impl;
 
+import com.miles.cache.CacheContainer;
 import com.miles.wechat.api.MultiMediaService;
 import com.miles.wechat.api.MultiMediaType;
 import com.miles.wechat.api.WeChatUrl;
+import com.miles.wechat.core.CacheAccessToken;
 import com.miles.wechat.core.RequestWrapper;
+import com.miles.wechat.core.WeChatContext;
 import com.miles.wechat.entity.UploadInfo;
 import com.miles.wechat.utils.GsonHelper;
 import com.miles.wechat.utils.SimpleRequest;
 import com.miles.wechat.utils.StringUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * @author miles
@@ -91,6 +93,36 @@ public class MultiMediaServiceImpl implements MultiMediaService {
     }
 
     public String mediaUrl(String mediaId) {
-        return RequestWrapper.getUrl(WeChatUrl.DOWNLOAD, new Serializable[]{mediaId});
+        return RequestWrapper.getUrl(WeChatUrl.DOWNLOAD, mediaId);
+    }
+
+    @Override
+    public UploadInfo uploadNews(String newsJson) {
+        try {
+            HttpEntity entity = new StringEntity(newsJson, "application/json", "utf-8");
+            String accessToken = (String) CacheContainer.getInstance().getCachedData(CacheAccessToken.class)
+                    .get(WeChatContext.get());
+            String url = RequestWrapper.getUrl(WeChatUrl.UPLOAD_NEWS, accessToken);
+            String result = SimpleRequest.doPost(url, entity);
+            return GsonHelper.fromJson(result, UploadInfo.class);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public UploadInfo uploadVideo(String videoJson) {
+        try {
+            HttpEntity entity = new StringEntity(videoJson, "application/json", "utf-8");
+            String accessToken = (String) CacheContainer.getInstance().getCachedData(CacheAccessToken.class)
+                    .get(WeChatContext.get());
+            String url = RequestWrapper.getUrl(WeChatUrl.UPLOAD_VIDEO, accessToken);
+            String result = SimpleRequest.doPost(url, entity);
+            return GsonHelper.fromJson(result, UploadInfo.class);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -1,6 +1,6 @@
 package com.miles.wechat.impl;
 
-import com.miles.wechat.AbstractBasicTest;
+import com.miles.wechat.WeChatBaseTest;
 import com.miles.wechat.api.MenuService;
 import com.miles.wechat.api.ResponseInfo;
 import com.miles.wechat.core.ServiceLoader;
@@ -13,7 +13,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuServiceImplTest extends AbstractBasicTest{
+public class MenuServiceImplTest extends WeChatBaseTest {
     private MenuService menuService;
 
     @Before

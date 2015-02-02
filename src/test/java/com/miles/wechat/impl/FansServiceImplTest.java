@@ -1,6 +1,6 @@
 package com.miles.wechat.impl;
 
-import com.miles.wechat.AbstractBasicTest;
+import com.miles.wechat.WeChatBaseTest;
 import com.miles.wechat.api.FansService;
 import com.miles.wechat.core.ServiceLoader;
 import com.miles.wechat.entity.Fans;
@@ -9,7 +9,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FansServiceImplTest extends AbstractBasicTest {
+public class FansServiceImplTest extends WeChatBaseTest {
     public static final String openid = "oQ3C4uMUBlTeVHCCyw-QWfO0P-Cs";
     private FansService fansService;
 

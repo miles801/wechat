@@ -11,12 +11,14 @@ public class SimpleAccount implements WechatAccount {
     private String appId;
     private String secret;
     private String token;
+    private String originalId;
 
     public SimpleAccount() {
         Configuration configuration = Configuration.getInstance();
         appId = configuration.getAppId();
         secret = configuration.getSecret();
         token = configuration.getToken();
+        originalId = configuration.getOriginalId();
     }
 
 
@@ -47,10 +49,6 @@ public class SimpleAccount implements WechatAccount {
         return WechatAccount.ENCRYPT_NO;
     }
 
-    @Override
-    public String getOriginalId() {
-        return null;
-    }
 
     public void setAppId(String appId) {
         this.appId = appId;
@@ -62,5 +60,14 @@ public class SimpleAccount implements WechatAccount {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    @Override
+    public String getOriginalId() {
+        return originalId;
+    }
+
+    public void setOriginalId(String originalId) {
+        this.originalId = originalId;
     }
 }

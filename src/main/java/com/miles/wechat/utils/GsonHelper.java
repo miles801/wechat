@@ -18,6 +18,12 @@ public class GsonHelper {
         jsonObject.addProperty(key, value);
         return jsonObject;
     }
+    
+    public static JsonObject addElement(String key, Boolean value) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(key, value);
+        return jsonObject;
+    }
 
     /**
      * 将一个对象转成json字符串

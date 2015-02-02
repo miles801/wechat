@@ -26,4 +26,19 @@ public interface WeChatUrl {
     public static final String SEND_TO_USER = "wechat.url.sendmsg.group";
     public static final String UPLOAD = "wechat.url.file.upload";
     public static final String DOWNLOAD = "wechat.url.file.download";
+    public static final String UPLOAD_NEWS = "wechat.url.upload.news";
+    public static final String UPLOAD_VIDEO = "wechat.url.upload.video";
+    /**
+     * 删除群发
+     */
+    public static final String MASS_DELETE = "wechat.url.mass.delete";
+    /**
+     * 群发预览
+     */
+    public static final String MASS_PREVIEW = "wechat.url.mass.preview";
+    /**
+     * 群发状态
+     */
+    public static final String MASS_STATUS = "wechat.url.mass.status";
+
 }

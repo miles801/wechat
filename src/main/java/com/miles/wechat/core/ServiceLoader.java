@@ -24,7 +24,7 @@ public class ServiceLoader {
     private ServiceLoader() {
         this.authService = new AuthServiceImpl();
         this.menuService = new MenuServiceImpl();
-//        this.messageService = new MessageServiceImpl();
+        this.messageService = new MessageServiceImpl();
         this.fansService = new FansServiceImpl();
         this.fansGroupService = new FansGroupServiceImpl();
         this.multiMediaService = new MultiMediaServiceImpl();

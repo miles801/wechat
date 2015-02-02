@@ -29,7 +29,11 @@ public enum EventMessageType {
     /**
      * 点击菜单：链接
      */
-    MENU_LINK("VIEW");
+    MENU_LINK("VIEW"),
+    /**
+     * 群发状态的结果
+     */
+    MASS_STATUS("MASSSENDJOBFINISH");
 
     private String value;
 

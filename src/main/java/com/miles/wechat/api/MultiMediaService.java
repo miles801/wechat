@@ -22,6 +22,23 @@ public interface MultiMediaService {
      */
     UploadInfo upload(File file, MultiMediaType type);
 
+
+    /**
+     * 上传图文
+     *
+     * @param newsJson 图文消息的json字符串
+     * @return 上传结果
+     */
+    UploadInfo uploadNews(String newsJson);
+
+    /**
+     * 上传视频
+     *
+     * @param videoJson 视频消息的json字符串
+     * @return 上传结果
+     */
+    UploadInfo uploadVideo(String videoJson);
+
     /**
      * 下载附件，返回File对象（该文件会保存到临时目录中）
      *

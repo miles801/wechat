@@ -17,7 +17,8 @@ public class SimpleCacheAccount implements CacheAccount {
         account.setAppId("wx9e74795487499c3b");
         account.setSecret("38ea56d7a4a1f73f38874b844c2d96dd");
         account.setToken("wanda");
-        map.put("gh_36f3110ed079", account);
+        account.setOriginalId("gh_36f3110ed079");
+        map.put(account.getOriginalId(), account);
         return map;
     }
 
