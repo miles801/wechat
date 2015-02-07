@@ -14,7 +14,6 @@ import com.miles.wechat.utils.SimpleRequest;
 import com.miles.wechat.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -36,20 +35,23 @@ public class FansServiceImpl implements FansService {
         JsonObject jsonObject = gson.fromJson(result, JsonObject.class);
         int total = jsonObject.get("total").getAsInt();
         int count = jsonObject.get("count").getAsInt();
-        JsonObject data = jsonObject.get("data").getAsJsonObject();
-        JsonArray array = data.getAsJsonArray("openid");
-        List<String> arr = new ArrayList<String>();
-        Iterator<JsonElement> iterator = array.iterator();
-        while (iterator.hasNext()) {
-            JsonElement element = iterator.next();
-            arr.add(element.getAsString());
-        }
-        String nextOpenId = jsonObject.get("next_openid").getAsString();
         FansData fansData = new FansData();
+
+        if (jsonObject.get("data") != null) {
+            JsonObject data = jsonObject.get("data").getAsJsonObject();
+            JsonArray array = data.getAsJsonArray("openid");
+            List<String> arr = new ArrayList<String>();
+            for (JsonElement element : array) {
+                arr.add(element.getAsString());
+            }
+            fansData.setData(arr);
+        }
+        if (jsonObject.get("next_openid") != null) {
+            String nextOpenId = jsonObject.get("next_openid").getAsString();
+            fansData.setNextOpenId(nextOpenId);
+        }
         fansData.setTotal(total);
         fansData.setCount(count);
-        fansData.setNextOpenId(nextOpenId);
-        fansData.setData(arr);
         return fansData;
     }
 
