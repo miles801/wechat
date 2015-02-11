@@ -41,4 +41,9 @@ public interface WeChatUrl {
      */
     public static final String MASS_STATUS = "wechat.url.mass.status";
 
+    /**
+     * 微信授权获取用户基本信息
+     */
+    public static final String AUTHORIZE = "wechat.url.authorize";
+
 }
