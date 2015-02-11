@@ -90,9 +90,11 @@ public class MessageHandler {
      * @return 要回复的消息对象
      */
     private ReplyMessage fireEvent(ReceivedMessage receivedMessage) {
+
         WeChatEngine engine = WeChatEngine.newInstance();
         String msgType = receivedMessage.getMessageType();
         ReplyMessage replyMessage = null;
+        logger.info("公众号[" + receivedMessage.getToUserName() + "]接收到来自[" + receivedMessage.getFromUserName() + "]的[" + msgType + "(" + receivedMessage.getEventType() + ")]消息!");
         if (ReceivedMessageType.TEXT.getValue().equals(msgType)) {
             replyMessage = engine.getReceiveTextMsgEvent().execute((ReceivedTextMessage) receivedMessage);
         } else if (ReceivedMessageType.IMAGE.getValue().equals(msgType)) {
@@ -110,8 +112,7 @@ public class MessageHandler {
             } else if ("unsubscribe".equalsIgnoreCase(eventType)) {
                 replyMessage = engine.getUnsubscribeEvent().execute((EventUnsubscribeMessage) receivedMessage);
             } else if ("location".equalsIgnoreCase(eventType)) {
-                // FIXME 暂不提供
-//                replyMessage = engine.getReportLocationEvent().execute((EventLocationMessage) receivedMessage);
+                replyMessage = engine.getReportLocationEvent().execute((EventLocationMessage) receivedMessage);
             } else if ("click".equalsIgnoreCase(eventType)) {
                 replyMessage = engine.getMenuClickEvent().execute((EventMenuClickMessage) receivedMessage);
             } else if ("view".equalsIgnoreCase(eventType)) {
